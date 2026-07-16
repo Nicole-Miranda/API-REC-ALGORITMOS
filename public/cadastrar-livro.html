@@ -57,7 +57,7 @@
                     </a>
                 </div>
 
-
+                 
                 <div class="btn-nav-white">
                     <a href="./painel.html">
                         <h3>Painel</h3>
@@ -115,7 +115,11 @@
                                 <input name="precoVenda" id="precoVenda" maxlength="20" type="Text"></input>
                             </label>
 
-
+                             <label>
+                                Quantidade desse livro em estoque:
+                                <br>
+                                <input name="quantidade_livros_em_estoque" id="quantidade_livros_em_estoque" maxlength="20" type="Text"></input>
+                            </label>
                             <button>Cadastrar</button>
                         </form>
                     </div>
@@ -141,41 +145,52 @@
     }
 
     function cadastrar() {
-        var corpo = {
+      var corpo = {
             titulo: form_postagem.titulo.value,
             fkGenero: form_postagem.fkGenero_lista.value,
             fkAutor: form_postagem.fkAutor_lista.value,
-            precoCompra: form_postagem.precoCompra.value,
-            precoVenda: form_postagem.precoVenda.value
+            precoCompra: Number(form_postagem.precoCompra.value),
+            precoVenda: Number(form_postagem.precoVenda.value),
+            quantidade_livros_em_estoque: Number(form_postagem.quantidade_livros_em_estoque.value)
         }
-
-        fetch(`/livros/cadastrar`, {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(corpo)
-        }).then(function (resposta) {
-
-            console.log("resposta: ", resposta);
-
-            if (resposta.ok) {
-                window.alert("Post realizado com sucesso. Você será redirecionado ao Acervo.");
-                window.location = "/";
-                limparFormulario();
-
-            } else if (resposta.status == 404) {
-                window.alert("Deu 404!");
-            } else {
-                throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
-            }
-        }).catch(function (resposta) {
-            console.log(`#ERRO: ${resposta}`);
-
-        });
+       
+        //let precoCompra = Number(form_postagem.precoCompra.value)
+        //let precoVenda = Number(form_postagem.precoVenda.value)
+        if(corpo.precoCompra >= 100 && (corpo.fkGenero == 1 || corpo.fkGenero == 2)){
+            corpo.precoVenda = corpo.precoCompra * 1.225
+        }else if(corpo.precoCompra <= 50 && (corpo.fkGenero == 3 || corpo.fkGenero == 1)){
+            corpo.precoVenda = corpo.precoCompra * 1.25
+        }else if(corpo.precoCompra > 50 && corpo.precoCompra < 100 && (corpo.fkGenero == 4)){
+            corpo.precoVenda = corpo.precoCompra * 1.275
+        }
+            fetch(`/livros/cadastrar`, {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(corpo)
+            }).then(function (resposta) {
+                
+                console.log("resposta: ", resposta);
+                
+                if (resposta.ok) {
+                    window.alert("Post realizado com sucesso. Você será redirecionado ao Acervo.");
+                    window.location = "/";
+                    limparFormulario();
+                    
+                } else if (resposta.status == 404) {
+                    window.alert("Deu 404!");
+                } else {
+                    throw ("Houve um erro ao tentar realizar a postagem! Código da resposta: " + resposta.status);
+                }
+            }).catch(function (resposta) {
+                console.log(`#ERRO: ${resposta}`);
+                
+            });
 
         return false;
 
+    
        
     }
 

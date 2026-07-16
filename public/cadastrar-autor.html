@@ -47,8 +47,10 @@
                     </a>
                 </div>
 
-                <div class="btn-nav">
+                <div class="btn-nav-white">
+                    <a href="./cadastrar-autor.html">
                         <h3>Cadastrar autor</h3>
+                    </a>
                 </div>
 
 
@@ -58,7 +60,7 @@
                     </a>
                 </div>
 
-
+            
                 <div class="btn-nav-white">
                     <a href="./painel.html">
                         <h3>Painel</h3>
@@ -117,21 +119,33 @@
 
     function cadastrar() {
 
-        let autoresCadastrados = []
-        for (let i = 0; i < autoresCadastrados.length; i++) {
-            if(autoresCadastrados.includes("")){
-                
-            }
-            
-        }
-
         var corpo = {
             nome: form_postagem.nome.value
         }
 
-        fetch(`/autores/cadastrar`, {
-            method: "post",
-            headers: {
+        //let autores = nome.value
+        //let autoresCadastrados = []
+        //autoresCadastrados.push(autores)
+        let caracterEspecial = ['<', '>', '!', '@', '#', '$', '%', '¨', '&', '*', '()', '{}', '=', '+']
+        let autores = []
+
+        if (corpo.nome == "") {
+            alert('O campo do autor está vazio!')
+        } else if(corpo.nome !== "") {
+            for (let i = 0; i < corpo.nome.length; i++) {
+                for (let j = 0; j < caracterEspecial.length; j++) {
+                    if (corpo.nome[i] == caracterEspecial[j]) {
+                        alert('O nome do autor não pode conter caracter especial')
+                        
+                    }
+                }
+            }
+        }else{
+
+            
+            fetch(`/autores/cadastrar`, {
+                method: "post",
+                headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(corpo)
@@ -140,8 +154,6 @@
             console.log("resposta: ", resposta);
 
             if (resposta.ok) {
-
-                autoresCadastrados.push(autores)
 
                 window.alert("Post realizado com sucesso. Você será redirecionado ao Acervo.");
                 window.location = "/";
@@ -157,9 +169,12 @@
 
         });
 
-        return false;
-
     }
 
+        return false;
+    }
+
+
+    
 
 </script>
